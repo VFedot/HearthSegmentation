@@ -30,7 +30,7 @@ if __name__ == "__main__":
     """ Predicting the mask """
     for x, y1 in tqdm(zip(test_x, test_y1), total=len(test_x)):
         """ Extracing the image name. """
-        image_name = x.split("/")[-1]
+        image_name = "MCUCXR_0019_0.png"
 
         """ Reading the image """
         ori_x = cv2.imread(x, cv2.IMREAD_COLOR)
