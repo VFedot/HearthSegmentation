@@ -30,15 +30,15 @@ class ImageProcessor:
 
         self.filtered_image = self.original_image
 
-    # def apply_median_filter(self):
-    #     self.filtered_image = self.original_image.filter(ImageFilter.MedianFilter())
+    def apply_median_filter(self):
+        self.filtered_image = self.original_image.filter(ImageFilter.MedianFilter())
 
-    # def apply_gaussian_filter(self):
-    #     self.filtered_image = self.original_image.filter(ImageFilter.GaussianBlur())
+    def apply_gaussian_filter(self):
+        self.filtered_image = self.original_image.filter(ImageFilter.GaussianBlur())
 
 def segment_image(image: np.ndarray) -> np.ndarray:
     """Predict a binary mask for the input image."""
-    H, W, _ = image.shape
+    H, W = image.shape
     image = cv2.resize(image, (512, 512))
     image = image / 255.0
 
