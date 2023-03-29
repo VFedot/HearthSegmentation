@@ -7,8 +7,10 @@ from PIL import Image, ImageFilter, ImageTk
 import pydicom
 import tensorflow as tf
 from keras.utils import CustomObjectScope
+from matplotlib import pyplot as plt
 
 from UNET import metrics
+from UNET.evalFinal import segmentImage
 
 
 class ImageProcessor:
@@ -35,20 +37,6 @@ class ImageProcessor:
 
     def apply_gaussian_filter(self):
         self.filtered_image = self.original_image.filter(ImageFilter.GaussianBlur())
-
-def segment_image(image: np.ndarray) -> np.ndarray:
-    """Predict a binary mask for the input image."""
-    H, W = image.shape
-    image = cv2.resize(image, (512, 512))
-    image = image / 255.0
-
-    with CustomObjectScope({'iou': metrics.iou, 'dice_coef': metrics.dice_coef, 'dice_loss': metrics.dice_loss}):
-        model = tf.keras.models.load_model("UNET/files/modelHearth.h5")
-
-    mask = model.predict(np.expand_dims(image, axis=0))[0]
-    mask = cv2.resize(mask, (W, H))
-    mask = (mask > 0.5).astype(np.uint8) * 255
-    return mask
 
 class App:
     def __init__(self, master):
@@ -101,10 +89,17 @@ class App:
         self.image_processor.filtered_image = self.image_processor.original_image
         self.display_images()
 
+    # def segment(self):
+    #     self.image_processor.filtered_image = Image.fromarray(segmentImage(np.array(self.image_processor.original_image)))
+    #     plt.imshow(self.image_processor.filtered_image, cmap='gray')
+    #     plt.show()
+    #     self.display_images()
+
     def segment(self):
-        self.mask_image = Image.fromarray(segment_image(np.array(self.image_processor.original_image)))
-        if self.mask_image.mode != "L":
-            self.mask_image = self.mask_image.convert("L")
+        filtered_image = segmentImage(np.array(self.image_processor.original_image))
+        filtered_image = Image.fromarray(filtered_image)
+        self.image_processor.filtered_image = filtered_image
+        self.display_images()
 
     def show_metadata(self):
         if self.image_processor.dicom_data:

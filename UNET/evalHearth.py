@@ -34,7 +34,7 @@ if __name__ == "__main__":
     """ Predicting the mask """
     for x, y1 in tqdm(zip(test_x, test_y1), total=len(test_x)):
         """ Extracing the image name. """
-        image_name = x.split("/")[-1]
+        image_name = "0c27c918-MCUCXR_0054_0.png"
         filename = os.path.basename(image_name)
 
         """ Reading the image """
@@ -58,6 +58,10 @@ if __name__ == "__main__":
 
         """ Saving the predicted mask along with the image and GT """
         y_pred = np.concatenate([y_pred, y_pred, y_pred], axis=-1)
+
+        plt.imshow(y_pred*255)
+        plt.show()
+
         cv2.imwrite(f'AiMask/{filename}', y_pred*255)
 
 
