@@ -3,6 +3,7 @@ import os
 from matplotlib import pyplot as plt
 
 from UNET.metrics import iou, dice_coef, dice_loss
+from PIL import Image, ImageFilter, ImageTk
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import numpy as np
@@ -14,7 +15,8 @@ H = 512
 W = 512
 
 def segmentImage(image):
-
+    plt.imshow(image, cmap='gray')
+    plt.show()
 
     """ Loading model """
     with CustomObjectScope({'iou': iou, 'dice_coef': dice_coef, 'dice_loss': dice_loss}):
@@ -33,6 +35,16 @@ def segmentImage(image):
 
         """ Saving the predicted mask along with the image and GT """
         y_pred = np.concatenate([y_pred, y_pred, y_pred], axis=-1)
-        y_pred = y_pred * 255
+        mask = y_pred * 255
+        mask = mask.astype(np.uint8)
 
-        return y_pred
+        ori_x = np.stack((ori_x,) * 3, axis=-1)
+
+
+        """ Selecting only the hearth region in the original image """
+        heart_pixels = ori_x.copy()
+        heart_pixels[np.where(mask == 0)] = 0
+        plt.imshow(heart_pixels)
+        plt.show()
+
+        return heart_pixels

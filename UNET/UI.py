@@ -3,7 +3,7 @@ from tkinter import filedialog
 
 import cv2
 import numpy as np
-from PIL import Image, ImageFilter, ImageTk
+from PIL import Image, ImageFilter, ImageTk, ImageOps
 import pydicom
 import tensorflow as tf
 from keras.utils import CustomObjectScope
@@ -97,7 +97,10 @@ class App:
 
     def segment(self):
         filtered_image = segmentImage(np.array(self.image_processor.original_image))
+        filtered_image = filtered_image.astype(np.uint8)
         filtered_image = Image.fromarray(filtered_image)
+        height, width = self.image_processor.original_image.size
+        filtered_image = filtered_image.resize((width, height))
         self.image_processor.filtered_image = filtered_image
         self.display_images()
 
