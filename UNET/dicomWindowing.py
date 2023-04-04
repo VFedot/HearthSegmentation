@@ -3,6 +3,7 @@ from tkinter import filedialog
 import pydicom
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image, ImageTk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import tkinter as tk
@@ -42,9 +43,9 @@ class DicomViewer:
         self.level_slider.pack(side=tk.LEFT, padx=10, pady=10)
         self.level_slider.set(128)
 
-        # Bind arrow keys to sliders
-        self.master.bind("<Up>", self.step_up)
-        self.master.bind("<Down>", self.step_down)
+        # # Bind arrow keys to sliders
+        # self.master.bind("<Up>", self.step_up)
+        # self.master.bind("<Down>", self.step_down)
 
     def open_dicom(self):
         # Open file dialog to select DICOM file
@@ -58,6 +59,11 @@ class DicomViewer:
         image = dicom.pixel_array.astype(float)
         self.ax.imshow(image, cmap=plt.cm.gray)
         self.canvas.draw()
+
+        # Convert image to PIL format and display in Tkinter canvas
+        pil_image = Image.fromarray(np.uint8(image))
+        photo_image = ImageTk.PhotoImage(pil_image)
+        self.canvas.create_image(0, 0, image=photo_image, anchor=tk.NW)
 
         # Set default window and level
         self.window = dicom.WindowWidth
@@ -76,17 +82,6 @@ class DicomViewer:
         self.ax.images[0].set_clim(self.level - self.window / 2, self.level + self.window / 2)
         self.canvas.draw()
 
-    def step_up(self, event):
-        if event.widget == self.window_slider:
-            self.window_slider.set(self.window_slider.get() + 1)
-        elif event.widget == self.level_slider:
-            self.level_slider.set(self.level_slider.get() + 1)
-
-    def step_down(self, event):
-        if event.widget == self.window_slider:
-            self.window_slider.set(self.window_slider.get() - 1)
-        elif event.widget == self.level:
-            self.level_slider.set(self.level_slider.get() - 1)
 
 
 if __name__ == "__main__":
