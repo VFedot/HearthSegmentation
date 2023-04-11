@@ -34,11 +34,11 @@ class DicomViewer:
         self.open_button.pack(side=tk.LEFT, padx=10, pady=10)
 
         # Create sliders for adjusting window and level
-        self.window_slider = tk.Scale(self.main_frame, from_=0, to=255, orient=tk.HORIZONTAL, length=200,
+        self.window_slider = tk.Scale(self.main_frame, from_=0, to=1000, orient=tk.HORIZONTAL, length=200,
                                       label="Window", command=self.adjust_window)
         self.window_slider.pack(side=tk.LEFT, padx=10, pady=10)
         self.window_slider.set(128)
-        self.level_slider = tk.Scale(self.main_frame, from_=0, to=255, orient=tk.HORIZONTAL, length=200, label="Level",
+        self.level_slider = tk.Scale(self.main_frame, from_=0, to=1000, orient=tk.HORIZONTAL, length=200, label="Level",
                                      command=self.adjust_level)
         self.level_slider.pack(side=tk.LEFT, padx=10, pady=10)
         self.level_slider.set(128)
